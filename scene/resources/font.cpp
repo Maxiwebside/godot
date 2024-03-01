@@ -2309,25 +2309,25 @@ RID FontFile::find_variation(const Dictionary &p_variation_coordinates, int p_fa
 	}
 
 	// Create new variation cache.
-	int idx = cache.size();
-	if (make_linked_from >= 0) {
-		_ensure_rid(idx, make_linked_from);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_TOP, p_spacing_top);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_BOTTOM, p_spacing_bottom);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_SPACE, p_spacing_space);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_GLYPH, p_spacing_glyph);
-		TS->font_set_baseline_offset(cache[idx], p_baseline_offset);
-	} else {
-		_ensure_rid(idx);
-		TS->font_set_variation_coordinates(cache[idx], p_variation_coordinates);
-		TS->font_set_face_index(cache[idx], p_face_index);
-		TS->font_set_embolden(cache[idx], p_strength);
-		TS->font_set_transform(cache[idx], p_transform);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_TOP, p_spacing_top);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_BOTTOM, p_spacing_bottom);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_SPACE, p_spacing_space);
-		TS->font_set_spacing(cache[idx], TextServer::SPACING_GLYPH, p_spacing_glyph);
-		TS->font_set_baseline_offset(cache[idx], p_baseline_offset);
+int idx = cache.size();
+if (idx >= 0 && idx < cache.size()) {
+    if (make_linked_from >= 0) {
+        _ensure_rid(idx, make_linked_from);
+    } else {
+        _ensure_rid(idx);
+        TS->font_set_variation_coordinates(cache[idx], p_variation_coordinates);
+        TS->font_set_face_index(cache[idx], p_face_index);
+        TS->font_set_embolden(cache[idx], p_strength);
+        TS->font_set_transform(cache[idx], p_transform);
+    }
+
+    // Validate idx again after potential changes in _ensure_rid.
+    if (idx >= 0 && idx < cache.size()) {
+        TS->font_set_spacing(cache[idx], TextServer::SPACING_TOP, p_spacing_top);
+        TS->font_set_spacing(cache[idx], TextServer::SPACING_BOTTOM, p_spacing_bottom);
+        TS->font_set_spacing(cache[idx], TextServer::SPACING_SPACE, p_spacing_space);
+        TS->font_set_spacing(cache[idx], TextServer::SPACING_GLYPH, p_spacing_glyph);
+        TS->font_set_baseline_offset(cache[idx], p_baseline_offset);
 	}
 	return cache[idx];
 }
